@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # ── Phoenix OS Web Frontend & API (Next.js 16) ──────────────────────────
+  phoenix-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phoenix-os-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_SITE_URL=http://localhost:3000
+      - COMBAT_ENGINE_URL=http://combat-engine:8080
+    depends_on:
+      - combat-engine
+    networks:
+      - phoenix-network
+
+  # ── Java Spring Boot High-Performance Combat Engine ─────────────────────
+  combat-engine:
+    build:
+      context: ./services/combat-engine
+      dockerfile: Dockerfile
+    container_name: phoenix-combat-engine
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - phoenix-network
+
+networks:
+  phoenix-network:
+    driver: bridge

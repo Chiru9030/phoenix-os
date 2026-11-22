@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: phoenix-config
+  namespace: phoenix-system
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  NEXT_PUBLIC_SITE_URL: "http://phoenix.local"
+  COMBAT_ENGINE_URL: "http://combat-engine-service.phoenix-system.svc.cluster.local:8080"
+  SPRING_PROFILES_ACTIVE: "prod"
+  SERVER_PORT: "8080"

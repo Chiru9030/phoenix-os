@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: phoenix-ingress
+  namespace: phoenix-system
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          # Route combat API calls to Java Spring Boot Engine
+          - path: /api/v1/combat
+            pathType: Prefix
+            backend:
+              service:
+                name: combat-engine-service
+                port:
+                  number: 8080
+          # Route all other web and API traffic to Next.js
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: phoenix-web-service
+                port:
+                  number: 80
