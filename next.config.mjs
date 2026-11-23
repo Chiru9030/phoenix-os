@@ -4,6 +4,9 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   distDir: process.env.NEXT_DIST_DIR || '.next',
   reactStrictMode: true,
+  experimental: {
+    agentUpgrade: 'security',
+  },
   images: { remotePatterns: [{ protocol: 'https', hostname: '**.supabase.co' }] },
   async headers() {
     return [{ source: '/:path*', headers: [
