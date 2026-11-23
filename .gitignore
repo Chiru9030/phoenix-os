@@ -9,3 +9,6 @@ next-env.d.ts
 .vercel
 .DS_Store
 .next-verify
+target/
+*.class
+k8s/secret.yaml
