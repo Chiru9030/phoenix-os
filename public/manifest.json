@@ -1,0 +1,19 @@
+{
+  "name": "Phoenix OS · AI-Powered Life RPG",
+  "short_name": "Phoenix OS",
+  "description": "Turn your real-world tasks and habits into an epic RPG with an AI Dungeon Master.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#100f17",
+  "theme_color": "#100f17",
+  "categories": ["productivity", "games", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

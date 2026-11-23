@@ -11,7 +11,13 @@ export const metadata: Metadata = {
   title: { default: 'Phoenix OS · Your life as an RPG', template: '%s · Phoenix OS' },
   description: 'An AI Dungeon Master turns your real goals into quests. Finish tasks, earn XP and Gold, level up your character.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  icons: { icon: '/icon.svg' },
+  manifest: '/manifest.json',
+  icons: { icon: '/icon.svg', apple: '/icon.svg' },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Phoenix OS',
+  },
 };
 export const viewport: Viewport = { themeColor: '#100f17', width: 'device-width', initialScale: 1 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {

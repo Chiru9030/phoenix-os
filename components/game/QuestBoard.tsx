@@ -7,6 +7,7 @@ import { ChevronRight, ScrollText, Sparkles, CheckCircle2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bar } from '@/components/ui/primitives';
 import { api, ApiError } from '@/lib/client/api';
+import { triggerHaptic } from '@/lib/audio/haptics';
 import type { CompletionResult } from '@/lib/server/quests';
 import { QuestCard, type QuestLite } from './QuestCard';
 import { useGame } from './GameProvider';
@@ -39,6 +40,7 @@ export function QuestBoard({
         body: { questId: q.id },
       });
       setDone((s) => new Set(s).add(q.id));
+      triggerHaptic('success');
       game.celebrate(r);
       router.refresh();
     } catch (e) {

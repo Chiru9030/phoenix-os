@@ -1,10 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { Bot, Brain, MessageSquare, Send, Sparkles, Wand2, X } from 'lucide-react';
+import { Bot, Brain, MessageSquare, Send, Sparkles, Volume2, VolumeX, Wand2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input, Badge } from '@/components/ui/primitives';
 import { api } from '@/lib/client/api';
+import { speakText, stopSpeaking, isSpeechSupported } from '@/lib/audio/voice';
 import { useGame } from './GameProvider';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +27,31 @@ export function AIDungeonMasterCard({ narrative, generatedBy, className }: { nar
   const [input, setInput] = React.useState('');
   const [messages, setMessages] = React.useState<{ role: 'user' | 'coach'; content: string }[]>([]);
   const [busy, setBusy] = React.useState(false);
+  const [speaking, setSpeaking] = React.useState(false);
+  const [canSpeak, setCanSpeak] = React.useState(false);
+
+  React.useEffect(() => {
+    setCanSpeak(isSpeechSupported());
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
+
+  function toggleVoice() {
+    if (!narrative) return;
+    if (speaking) {
+      stopSpeaking();
+      setSpeaking(false);
+      game.play('click');
+    } else {
+      game.play('click');
+      speakText(narrative, {
+        onStart: () => setSpeaking(true),
+        onEnd: () => setSpeaking(false),
+        onError: () => setSpeaking(false),
+      });
+    }
+  }
 
   const isLlm = generatedBy && generatedBy !== 'offline' && generatedBy !== 'pending';
 
@@ -74,15 +100,36 @@ export function AIDungeonMasterCard({ narrative, generatedBy, className }: { nar
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setChatOpen(!chatOpen)}
-          className="gap-1.5 border-gold/30 text-xs text-gold-bright hover:bg-gold/10"
-        >
-          <MessageSquare className="h-3.5 w-3.5" />
-          {chatOpen ? 'Close Dialogue' : 'Consult Master'}
-        </Button>
+        <div className="flex items-center gap-2">
+          {canSpeak && narrative && (
+            <Button
+              type="button"
+              variant={speaking ? 'gold' : 'outline'}
+              size="sm"
+              onClick={toggleVoice}
+              className={cn(
+                'gap-1.5 text-xs transition-all',
+                speaking
+                  ? 'animate-pulse border-gold bg-gold/20 text-gold-bright'
+                  : 'border-hairline/80 text-parchment-muted hover:border-gold hover:text-gold-bright'
+              )}
+              title={speaking ? 'Stop narration' : 'Listen to Dungeon Master narration'}
+            >
+              {speaking ? <VolumeX className="h-3.5 w-3.5 text-gold-bright" /> : <Volume2 className="h-3.5 w-3.5" />}
+              <span>{speaking ? 'Mute' : 'Listen'}</span>
+            </Button>
+          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setChatOpen(!chatOpen)}
+            className="gap-1.5 border-gold/30 text-xs text-gold-bright hover:bg-gold/10"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            {chatOpen ? 'Close Dialogue' : 'Consult Master'}
+          </Button>
+        </div>
       </div>
 
       {narrative && (

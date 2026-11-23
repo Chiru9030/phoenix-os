@@ -6,6 +6,7 @@ import { Plus, Sparkles, Zap, ChevronDown, ChevronUp, Bot, Target } from 'lucide
 import { Button } from '@/components/ui/button';
 import { Input, Badge } from '@/components/ui/primitives';
 import { api, ApiError } from '@/lib/client/api';
+import { triggerHaptic } from '@/lib/audio/haptics';
 import { useGame } from './GameProvider';
 import type { QuestType } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -40,6 +41,7 @@ export function QuickQuestBar({ className }: { className?: string }) {
       });
       setTitle('');
       game.play('complete');
+      triggerHaptic('medium');
       game.toast({ tone: 'gold', title: `Quest added: "${clean}"` });
       router.refresh();
     } catch (err) {
@@ -60,6 +62,7 @@ export function QuickQuestBar({ className }: { className?: string }) {
         body: { prompt: text },
       });
       game.play('achievement');
+      triggerHaptic('levelup');
       game.toast({
         tone: 'arcane',
         title: 'Quests Generated!',
